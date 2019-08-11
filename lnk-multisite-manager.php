@@ -13,7 +13,7 @@
 function lnk_multisite_manager_options_page() {
     add_menu_page(
         'Gestor de Publicacion',
-        'Gestor de Publicación',
+        'Publicación',
         'manage_options',
         'lnk_multisite_manager_options',
         'lnk_multisite_manager_options_page_html',
