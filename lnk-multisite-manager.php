@@ -10,7 +10,7 @@
  * License: GPLv3
  */
 
-function delegaciones_options_page() {
+function lnk_multisite_manager_options_page() {
     add_menu_page(
         'Gestor de Publicacion',
         'Gestor de Publicación',
