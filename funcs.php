@@ -13,7 +13,10 @@
    if(is_array($sites))
    foreach($sites as $site_key => $site){
      switch_to_blog($site->blog_id);
-
+     print "<pre>";
+     var_dump($site);
+     print "</pre>";
+     
      $posts_args = array(
         'numberposts' => 12 // prueba
      );
