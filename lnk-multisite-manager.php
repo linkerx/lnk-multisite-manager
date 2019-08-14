@@ -42,6 +42,7 @@ function lnk_multisite_manager_page_html(){
 
 function lnk_multisite_manager_get_posts_action(){
     $posts = lnk_multisite_manager_get_posts();
-    return json_encode($posts);
+    echo json_encode($posts);
+    wp_die();
 }
 add_action( 'wp_ajax_lnk_multisite_manager_get_posts_action', 'lnk_multisite_manager_get_posts_action' );

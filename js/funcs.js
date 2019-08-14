@@ -1,9 +1,10 @@
 jQuery(document).ready(function() {
-    load_posts();
+    lnk_load_posts();
 });
 
-function load_posts(){
-    console.log("get posts...")
+var lnkPosts = [];
+
+function lnk_load_posts(){
     var data = {
         'action': 'lnk_multisite_manager_get_posts_action'
     }
@@ -11,8 +12,14 @@ function load_posts(){
     jQuery.ajax({
         url: ajaxurl,
         data: data,
+        dataType:'json',
         success: function(response){
-            console.log(response);
+            lnkPosts = response;
+            lnk_render_list();
         }
     })
+}
+
+function lnk_render_list(){
+    
 }
