@@ -12,18 +12,34 @@
    $allPosts = array();
    if(is_array($sites))
    foreach($sites as $site_key => $site){
-     switch_to_blog($site->blog_id);
-     print "<pre>";
-     var_dump($site);
-     print "</pre>";
-     
-     $posts_args = array(
-        'numberposts' => 12 // prueba
+    switch_to_blog($site->blog_id);
+    $posts_args = array(
+        'numberposts' => '-1',
+        'meta_query' => array(
+          'relation' => 'OR',
+          /*array(
+           'key' => 'lnk_revision',
+           'compare' => 'NOT EXISTS'
+          ),*/
+          array(
+            'key' => 'lnk_revision',
+            'compare' => '=',
+            'value' => '0'
+          )
+      )
      );
      $posts = get_posts($posts_args);
+     
+     /*
+     print "<pre>";
+     var_dump($site);
+     var_dump($posts);
+     print "</pre>;";
+     */
 
      foreach($posts as $post_key => $post){
-       $posts[$post_key]->blog = array(php
+
+       $posts[$post_key]->blog = array(
          'blog_id' => $site->blog_id,
          'blog_name' => get_bloginfo('name'),
          'blog_url' => $site->path
@@ -41,7 +57,6 @@
      restore_current_blog();
    }
    usort($allPosts,'lnk_multisite_manager_compare_by_date');
-   $allPosts = array_slice($allPosts,0,$count);
    return $allPosts;
  }
 
