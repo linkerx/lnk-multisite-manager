@@ -76,3 +76,25 @@
     font-weight: bold;
     font-size:1.2em;
 }
+
+#posts li button{
+    padding: 3px;
+    margin: 3px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#posts li button#marcar_revisado {
+    background-color: #4aa64a;;
+    color: #fff;
+}
+
+#posts li button#btn_publicar {
+    background-color: #4aa64a;
+    color: #fff;
+}
+
+#posts li button#btn_despublicar {
+    background-color: #7c3535;
+    color: #fff;
+}

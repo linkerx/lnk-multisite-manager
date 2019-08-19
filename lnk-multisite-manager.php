@@ -65,19 +65,45 @@ add_action( 'wp_ajax_lnk_multisite_manager_get_posts_action', 'lnk_multisite_man
  * PUBLICAR HOME
  */
 
-function lnk_multisite_manager_publicar_home_action($request){
+function lnk_multisite_manager_publicar_home_action($request) {
     $post_id = $_POST['post_id'];
     $publicar = ($_POST['publicar'] == '1');
     $post = get_post($post_id);
-
     if($publicar) {
         update_post_meta($post_id,'lnk_onhome',1);
     } else {
         update_post_meta($post_id,'lnk_onhome',0);
+        update_post_meta($post_id,'lnk_featured',0);
     }
-    $post->onhome = get_post_meta($post_id,'lnk_onhome',true);
+    $post->lnk_onhome = get_post_meta($post_id,'lnk_onhome',true);
     echo json_encode($post);
-    
+   
     wp_die();
 }
 add_action( 'wp_ajax_lnk_multisite_manager_publicar_home_action', 'lnk_multisite_manager_publicar_home_action' );
+
+function lnk_multisite_manager_destacar_action($request) {
+    $post_id = $_POST['post_id'];
+    $destacar = ($_POST['destacar'] == '1');
+    $post = get_post($post_id);
+    if($destacar) {
+        update_post_meta($post_id,'lnk_featured',1);
+    } else {
+        update_post_meta($post_id,'lnk_featured',0);
+    }
+    $post->lnk_onhome = get_post_meta($post_id,'lnk_onhome',true);
+    $post->lnk_featured = get_post_meta($post_id,'lnk_featured',true);
+    echo json_encode($post);
+    wp_die();
+}
+add_action( 'wp_ajax_lnk_multisite_manager_destacar_action', 'lnk_multisite_manager_destacar_action' );
+
+function lnk_multisite_manager_revisar_action($request) {
+    $post_id = $_POST['post_id'];
+    update_post_meta($post_id,'lnk_checked',1);
+    $post = get_post($post_id);
+    $post->lnk_checked = get_post_meta($post_id,'lnk_checked',true);
+    echo json_encode($post);
+    wp_die();
+}
+add_action( 'wp_ajax_lnk_multisite_manager_revisar_action', 'lnk_multisite_manager_revisar_action' );
