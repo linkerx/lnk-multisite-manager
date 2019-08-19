@@ -1,0 +1,78 @@
+#lnk-multisite-manager {
+    position: relative;
+    z-index: 50;
+}
+
+#cargando {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #000;
+    opacity: 0.4;
+    z-index: 100;
+}
+
+#config {
+    display:flex;
+    flex-wrap: nowrap;
+    float:right;
+}
+
+#config input {
+    margin:10px;
+}
+
+#posts ul {
+    clear:both;
+    display: flex;
+    flex-wrap: nowrap;
+    margin:0;
+}
+
+#posts ul li{
+    padding: 4px;
+    margin: 0;
+    border-bottom: 1px solid #aaa;
+    border-right: 1px solid #aaa;
+    
+}
+
+#posts .col-titulo {
+    width: 30%;
+}
+
+#posts .col-site {
+    width: 20%;
+}
+
+#posts .col-estado {
+    width: 30%;
+}
+
+
+#posts .col-acciones {
+    width: 20%;
+}
+
+#posts .posts-header ul {
+    border-top: 1px solid #aaa;
+    border-left: 1px solid #aaa;
+    background-color: #ccc;
+    color: #fff;
+}
+
+#posts .posts-body ul {
+    border-left: 1px solid #aaa;
+    background-color: #fff;
+}
+
+#posts .posts-body ul.onhome {
+    background-color: #ecf9eb;
+}
+
+#posts .posts-header li {
+    font-weight: bold;
+    font-size:1.2em;
+}

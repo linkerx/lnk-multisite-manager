@@ -17,10 +17,10 @@
         'numberposts' => '-1',
         'meta_query' => array(
           'relation' => 'OR',
-          /*array(
+          array(
            'key' => 'lnk_revision',
            'compare' => 'NOT EXISTS'
-          ),*/
+          ),
           array(
             'key' => 'lnk_revision',
             'compare' => '=',
@@ -51,6 +51,8 @@
        }
 
        $posts[$post_key]->thumbnail = get_the_post_thumbnail_url($post->ID);
+
+       $posts[$post_key]->onhome = get_post_meta($post->ID,'lnk_onhome',true);
      }
 
      $allPosts = array_merge($allPosts,$posts);
