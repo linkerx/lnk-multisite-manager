@@ -69,7 +69,11 @@
 }
 
 #posts .posts-body ul.onhome {
-    background-color: #ecf9eb;
+    background-color: #d3ffd0;
+}
+
+#posts .posts-body ul.onhome.featured {
+    background-color: #f3ffaf;
 }
 
 #posts .posts-header li {

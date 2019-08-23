@@ -44,7 +44,15 @@ function lnk_multisite_manager_page_html(){
 /* RENDER */
 function lnk_multisite_manager_page_config() {
     $config = "<ul id='config'>";
-    $config.= "<li><label>Postear en redes al publicar</label><input type='checkbox' name='chk-postear-redes' id='chk-postear-redes'></li>";
+    $config.= "<li><label>Mostrar Revisados</label><input type='checkbox' name='chk_mostrar_revisados' id='chk_mostrar_revisados'></li>";
+    $config.= "<li><label>Filtrar por tiempo</label>";
+    $config.= "<select name='filtro_tiempo' id='filtro_tiempo'>";
+    $config.= "<option value='1 week ago'>Última Semana</option>";
+    $config.= "<option value='1 month ago'>Último Mes</option>";
+    $config.= "<option value='1 year ago'>Último Año</option>";
+    $config.= "<option value='siempre'>Siempre</option>";
+    $config.= "</select></li>";
+    $config.= "<li><label>Postear en redes al publicar</label><input type='checkbox' name='chk_postear_redes' id='chk_postear_redes'></li>";
     $config.= "</ul>";
     return $config;
 }
@@ -55,7 +63,11 @@ function lnk_multisite_manager_page_config() {
  * GET POSTS 
  */
 function lnk_multisite_manager_get_posts_action(){
-    $posts = lnk_multisite_manager_get_posts();
+    $filtro = array();
+    $filtro['tiempo'] = $_GET['filtro_tiempo'];
+    $filtro['revisados'] = $_GET['mostrar_revisados'];
+    
+    $posts = lnk_multisite_manager_get_posts($filtro);
     echo json_encode($posts);
     wp_die();
 }
@@ -67,7 +79,9 @@ add_action( 'wp_ajax_lnk_multisite_manager_get_posts_action', 'lnk_multisite_man
 
 function lnk_multisite_manager_publicar_home_action($request) {
     $post_id = $_POST['post_id'];
+    $blog_id = $_POST['blog_id'];
     $publicar = ($_POST['publicar'] == '1');
+    switch_to_blog($blog_id);
     $post = get_post($post_id);
     if($publicar) {
         update_post_meta($post_id,'lnk_onhome',1);
@@ -76,15 +90,17 @@ function lnk_multisite_manager_publicar_home_action($request) {
         update_post_meta($post_id,'lnk_featured',0);
     }
     $post->lnk_onhome = get_post_meta($post_id,'lnk_onhome',true);
+    restore_current_blog();
     echo json_encode($post);
-   
     wp_die();
 }
 add_action( 'wp_ajax_lnk_multisite_manager_publicar_home_action', 'lnk_multisite_manager_publicar_home_action' );
 
 function lnk_multisite_manager_destacar_action($request) {
     $post_id = $_POST['post_id'];
+    $blog_id = $_POST['blog_id'];
     $destacar = ($_POST['destacar'] == '1');
+    switch_to_blog($blog_id);
     $post = get_post($post_id);
     if($destacar) {
         update_post_meta($post_id,'lnk_featured',1);
@@ -93,6 +109,7 @@ function lnk_multisite_manager_destacar_action($request) {
     }
     $post->lnk_onhome = get_post_meta($post_id,'lnk_onhome',true);
     $post->lnk_featured = get_post_meta($post_id,'lnk_featured',true);
+    restore_current_blog();
     echo json_encode($post);
     wp_die();
 }
@@ -100,9 +117,12 @@ add_action( 'wp_ajax_lnk_multisite_manager_destacar_action', 'lnk_multisite_mana
 
 function lnk_multisite_manager_revisar_action($request) {
     $post_id = $_POST['post_id'];
+    $blog_id = $_POST['blog_id'];
+    switch_to_blog($blog_id);
     update_post_meta($post_id,'lnk_checked',1);
     $post = get_post($post_id);
     $post->lnk_checked = get_post_meta($post_id,'lnk_checked',true);
+    restore_current_blog();
     echo json_encode($post);
     wp_die();
 }

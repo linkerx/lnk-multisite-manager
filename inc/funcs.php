@@ -3,31 +3,48 @@
 /**
  * Lista de posts de todos los sitios
  */
- function lnk_multisite_manager_get_posts(){
+function lnk_multisite_manager_get_posts($filtro){
 
-   $sites_args = array(
-     'public' => 1
-   );
+  //var_dump($filtro);
+  //die;
+
+  $sites_args = array(
+    'public' => 1
+  );
+
+  $posts_args = array();
+
+  $posts_args['numberposts'] = '-1';
+  
+  $posts_args['meta_query'] = array(
+    'relation' => 'OR'
+  );
+
+  if($filtro['revisados'] == 'false') {
+    $posts_args['meta_query'] = array(
+      'relation' => 'OR',
+      array(
+        'key' => 'lnk_checked',
+        'compare' => 'NOT EXISTS'
+      ),
+      array(
+        'key' => 'lnk_checked',
+        'compare' => '=',
+        'value' => '0'
+      )
+    );
+  }
+
+  if($filtro['tiempo'] !== 'siempre') {
+      $posts_args['date_query'] = array(array('after' => $filtro['tiempo']));
+  }
+
    $sites = get_sites($sites_args);
    $allPosts = array();
    if(is_array($sites))
    foreach($sites as $site_key => $site){
     switch_to_blog($site->blog_id);
-    $posts_args = array(
-        'numberposts' => '-1',
-        'meta_query' => array(
-          'relation' => 'OR',
-          array(
-            'key' => 'lnk_checked',
-            'compare' => 'NOT EXISTS'
-           ),
-          array(
-            'key' => 'lnk_checked',
-            'compare' => '=',
-            'value' => '0'
-          )
-      )
-     );
+
      $posts = get_posts($posts_args);
 
      foreach($posts as $post_key => $post){
@@ -43,6 +60,7 @@
          $posts[$post_key]->the_term = get_term($terms[0])->slug;
        }
        $posts[$post_key]->thumbnail = get_the_post_thumbnail_url($post->ID);
+       $posts[$post_key]->lnk_checked = get_post_meta($post->ID,'lnk_checked',true);
        $posts[$post_key]->lnk_onhome = get_post_meta($post->ID,'lnk_onhome',true);
        $posts[$post_key]->lnk_featured = get_post_meta($post->ID,'lnk_featured',true);
      }
