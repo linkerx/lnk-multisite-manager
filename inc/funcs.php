@@ -63,6 +63,9 @@ function lnk_multisite_manager_get_posts($filtro){
        $posts[$post_key]->lnk_checked = get_post_meta($post->ID,'lnk_checked',true);
        $posts[$post_key]->lnk_onhome = get_post_meta($post->ID,'lnk_onhome',true);
        $posts[$post_key]->lnk_featured = get_post_meta($post->ID,'lnk_featured',true);
+       $posts[$post_key]->lnk_featured_mode = get_post_meta($post->ID,'lnk_featured_mode',true);
+       $posts[$post_key]->lnk_onagenda = get_post_meta($post->ID,'lnk_onagenda',true);
+       $posts[$post_key]->lnk_agenda = get_post_meta($post->ID,'lnk_agenda',true);
      }
 
      $allPosts = array_merge($allPosts,$posts);

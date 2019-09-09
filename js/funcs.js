@@ -23,7 +23,7 @@ function lnk_load_posts() {
         'filtro_tiempo': filtro_tiempo,
         'mostrar_revisados': mostrar_revisados
     }
-    console.log(data);
+    //console.log(data);
     jQuery.ajax({
         url: ajaxurl,
         data: data,
@@ -32,6 +32,9 @@ function lnk_load_posts() {
             lnkPosts = response;
             lnk_render_list();
             lnk_loading(false);
+            jQuery(".datepicker").datepicker({
+                dateFormat : "yy-mm-dd"
+            });
         }
     })
 }
@@ -43,6 +46,13 @@ function lnk_bind_componentes(){
     jQuery('#chk_mostrar_revisados').on('change',function(){
         lnk_load_posts();
     })
+    jQuery("#posts").on("change",".datepicker",function(elem){
+        lnk_change_agenda(
+            jQuery(elem.target).attr('data-blog'),
+            jQuery(elem.target).attr('data-post'),
+            jQuery(elem.target).val()
+        );
+    });
 }
 
 function lnk_render_list() {
@@ -84,18 +94,31 @@ function lnk_render_list() {
         
         html_item+= "</li>";
         html_item+= "<li class='col-acciones'>";
+        
+        /* EN HOME */
         if(typeof(item.lnk_onhome) != 'undefined' && item.lnk_onhome === '1') {
-            html_item+= "<button id='btn_despublicar' onClick='lnk_publicar_home("+item.blog.blog_id+","+item.ID+",0)'><span title='Despublicar Home' class='dashicons dashicons-hidden' ></span></a>";
+            html_item+= "<button id='btn_despublicar' onClick='lnk_publicar_home("+item.blog.blog_id+","+item.ID+",0)'><span title='Despublicar Home' class='dashicons dashicons-hidden' ></span></button>";
             if(typeof(item.lnk_featured) != 'undefined' && item.lnk_featured === '1') {
-                html_item+= "<button id='btn_destacar' onClick='lnk_destacar("+item.blog.blog_id+","+item.ID+",0)'><span title='Quitar Destacado' class='dashicons dashicons-star-empty' ></span></a>";
-            } else {
-                html_item+= "<button id='btn_destacar' onClick='lnk_destacar("+item.blog.blog_id+","+item.ID+",1)'><span title='Destacar' class='dashicons dashicons-star-filled' ></span></a>";
+                html_item+= "<button id='btn_destacar' onClick='lnk_destacar("+item.blog.blog_id+","+item.ID+",0)'><span title='Quitar Destacado' class='dashicons dashicons-star-empty' ></span></button>";
+                html_item+= "<button id='btn_destacar_mode' onClick='lnk_destacar_mode("+item.blog.blog_id+","+item.ID+","+item.lnk_featured_mode+")'>"+item.lnk_featured_mode+"</button>";
+           } else {
+                html_item+= "<button id='btn_destacar' onClick='lnk_destacar("+item.blog.blog_id+","+item.ID+",1)'><span title='Destacar' class='dashicons dashicons-star-filled' ></span></button>";
             }
         } else {
-            html_item+= "<button id='btn_publicar' onClick='lnk_publicar_home("+item.blog.blog_id+","+item.ID+",1)'><span title='Publicar Home' class='dashicons dashicons-visibility'></span></a>";
+            html_item+= "<button id='btn_publicar' onClick='lnk_publicar_home("+item.blog.blog_id+","+item.ID+",1)'><span title='Publicar Home' class='dashicons dashicons-visibility'></span></button>";
         }
+
+        /* EN AGENDA */
+        if(typeof(item.lnk_onagenda) != 'undefined' && item.lnk_onagenda === '1') {
+            html_item+= "<button id='btn_desagendar' onClick='lnk_agendar("+item.blog.blog_id+","+item.ID+",0)'><span title='Desagendar' class='dashicons dashicons-calendar'></span></button>";
+            html_item+= "<input type='text' id='input_agendar_"+item.ID+"' data-post='"+item.ID+"' data-blog='"+item.blog.blog_id+"' class='datepicker' value='"+item.lnk_agenda+"' />";
+        } else {
+            html_item+= "<button id='btn_agendar' onClick='lnk_agendar("+item.blog.blog_id+","+item.ID+",1)'><span title='Agendar' class='dashicons dashicons-calendar'></span></button>";
+        }
+
+        /* REVISADO */
         if(!(item.lnk_checked == '1')) {
-            html_item+= "<button id='marcar_revisado' onClick='lnk_revisar("+item.blog.blog_id+","+item.ID+",0)'><span title='Marcar Revisado' class='dashicons dashicons-yes' ></span></a>";
+            html_item+= "<button id='marcar_revisado' onClick='lnk_revisar("+item.blog.blog_id+","+item.ID+",0)'><span title='Marcar Revisado' class='dashicons dashicons-yes' ></span></button>";
         }
         html_item+= "</li></ul>";
         return html_item;
@@ -142,6 +165,25 @@ function lnk_destacar(blog_id,post_id,destacar) {
     })
 }
 
+function lnk_destacar_mode(blog_id,post_id,mode) {
+    var data = {
+        'action': 'lnk_multisite_manager_destacar_mode_action',
+        'blog_id': blog_id,
+        'post_id': post_id,
+        'mode': mode
+    }
+
+    jQuery.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: data,
+        dataType:'json',
+        success: function(response){
+            lnk_load_posts();
+        }
+    })
+}
+
 function lnk_revisar(blog_id,post_id,publicar) {
     if(confirm("Al realizar esto la publicacion desaparecerá de este listado. ¿Continuar?")) {
         var data = {
@@ -160,4 +202,42 @@ function lnk_revisar(blog_id,post_id,publicar) {
             }
         })
     }
+}
+
+function lnk_agendar(blog_id,post_id,agendar) {
+    var data = {
+        'action': 'lnk_multisite_manager_agendar_action',
+        'blog_id': blog_id,
+        'post_id': post_id,
+        'agendar': agendar
+    }
+
+    jQuery.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: data,
+        dataType:'json',
+        success: function(response){
+            lnk_load_posts();
+        }
+    })
+}
+
+function lnk_change_agenda(blog_id,post_id,fecha) {
+    var data = {
+        'action': 'lnk_multisite_manager_change_agenda_action',
+        'blog_id': blog_id,
+        'post_id': post_id,
+        'fecha': fecha
+    }
+
+    jQuery.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: data,
+        dataType:'json',
+        success: function(response){
+            lnk_load_posts();
+        }
+    })
 }
