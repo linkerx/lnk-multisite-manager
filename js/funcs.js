@@ -108,6 +108,11 @@ function lnk_render_list() {
             html_item+= "<button id='btn_publicar' onClick='lnk_publicar_home("+item.blog.blog_id+","+item.ID+",1)'><span title='Publicar Home' class='dashicons dashicons-visibility'></span></button>";
         }
 
+        /* FACEBOOK */
+            html_item+= "<button id='btn_post_facebook' onClick='lnk_post_facebook("+item.blog.blog_id+","+item.ID+")'>";
+            html_item+= "<span title='Postear en Facebook' class='dashicons dashicons-facebook' ></span>";
+            html_item+= "</button>";
+        
         /* EN AGENDA */
         if(typeof(item.lnk_onagenda) != 'undefined' && item.lnk_onagenda === '1') {
             html_item+= "<button id='btn_desagendar' onClick='lnk_agendar("+item.blog.blog_id+","+item.ID+",0)'><span title='Desagendar' class='dashicons dashicons-calendar'></span></button>";
@@ -171,6 +176,24 @@ function lnk_destacar_mode(blog_id,post_id,mode) {
         'blog_id': blog_id,
         'post_id': post_id,
         'mode': mode
+    }
+
+    jQuery.ajax({
+        url: ajaxurl,
+        type: 'POST',
+        data: data,
+        dataType:'json',
+        success: function(response){
+            lnk_load_posts();
+        }
+    })
+}
+
+function lnk_post_facebook(blog_id,post_id) {
+    var data = {
+        'action': 'lnk_multisite_manager_post_facebook_action',
+        'blog_id': blog_id,
+        'post_id': post_id
     }
 
     jQuery.ajax({

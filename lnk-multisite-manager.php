@@ -11,6 +11,7 @@
  */
 
 require_once('inc/funcs.php');
+require_once('inc/face.php');
 
 function lnk_multisite_manager_page() {
     $page = add_menu_page(
@@ -141,6 +142,41 @@ function lnk_multisite_manager_destacar_mode_action($request) {
     wp_die();
 }
 add_action( 'wp_ajax_lnk_multisite_manager_destacar_mode_action', 'lnk_multisite_manager_destacar_mode_action' );
+
+function lnk_multisite_manager_post_facebook_action($request) {
+    $post_id = $_POST['post_id'];
+    $blog_id = $_POST['blog_id'];
+    switch_to_blog($blog_id);
+    $post = get_post($post_id);
+    
+    $site = get_site($blog_id);
+    $post->blog = array(
+        'blog_id' => $site->blog_id,
+        'blog_name' => get_bloginfo('name'),
+        'blog_url' => $site->path
+    );
+
+    $cat = get_the_category($post_id)[0]->slug;
+
+    $post->lnk_url = getenv('FRONTEND_URL').$site->path.$cat."/".$post->post_name;
+
+    restore_current_blog();
+
+    $facebook_count = get_post_meta($post_id,'lnk_facebook_count',true);
+
+    if(lnk_multisite_manager_post_facebook($post)) {
+        $facebook_count++;
+        switch_to_blog($blog_id);
+        update_post_meta($post_id,'lnk_facebook_count',$facebook_count);
+        restore_current_blog();
+    }
+
+    $post->lnk_facebook_count = $facebook_count;
+    
+    echo json_encode($post);
+    wp_die();
+}
+add_action( 'wp_ajax_lnk_multisite_manager_post_facebook_action', 'lnk_multisite_manager_post_facebook_action' );
 
 function lnk_multisite_manager_revisar_action($request) {
     $post_id = $_POST['post_id'];
