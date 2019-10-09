@@ -39,6 +39,10 @@
     
 }
 
+#posts .col-fecha {
+    width: 10%;
+}
+
 #posts .col-titulo {
     width: 30%;
 }
@@ -48,7 +52,7 @@
 }
 
 #posts .col-estado {
-    width: 20%;
+    width: 10%;
 }
 
 
