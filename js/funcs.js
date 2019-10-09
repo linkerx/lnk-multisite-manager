@@ -75,7 +75,7 @@ function lnk_render_list() {
             html_item+= "featured ";
         }
         html_item+= "' >";
-        html_item+= "<li class='col-fecha'>"+date('d/m/Y H:i',strtotime(item.post_date))+"</li>";
+        html_item+= "<li class='col-fecha'>"+item.post_date+"</li>";
         html_item+= "<li class='col-titulo'>"+item.post_title+"</li>";
         html_item+= "<li class='col-site'>"+item.blog.blog_name+"</li>";
         html_item+= "<li class='col-estado'>";
