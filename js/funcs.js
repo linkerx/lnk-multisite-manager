@@ -58,9 +58,10 @@ function lnk_bind_componentes(){
 function lnk_render_list() {
     html = "<div class='posts-header'>";
     html+= "<ul>";
+    html+= "<li class='col-fecha'>Fecha</li>";
     html+= "<li class='col-titulo'>Titulo</li>";
     html+= "<li class='col-site'>Sitio</li>";
-    html+= "<li class='col-estado'>Estado</li>";
+    html+= "<li class='col-estado'>Visibilidad</li>";
     html+= "<li class='col-acciones'>Acciones</li>";
     html+= "</ul>";
     html+= "</div>";
@@ -74,6 +75,7 @@ function lnk_render_list() {
             html_item+= "featured ";
         }
         html_item+= "' >";
+        html_item+= "<li class='col-fecha'>"+date('d/m/Y H:i',strtotime(item.post_date))+"</li>";
         html_item+= "<li class='col-titulo'>"+item.post_title+"</li>";
         html_item+= "<li class='col-site'>"+item.blog.blog_name+"</li>";
         html_item+= "<li class='col-estado'>";
