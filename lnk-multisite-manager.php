@@ -35,7 +35,6 @@ function lnk_multisite_manager_include_assets() {
     wp_register_style( 'jquery-ui', 'https://code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css' );
     wp_enqueue_style( 'jquery-ui' );  
 }
-add_action('wp_enqueue_scripts','ava_test_init');
 
 function lnk_multisite_manager_page_html(){
     echo "<section id='lnk-multisite-manager'>";
