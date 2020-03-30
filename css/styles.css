@@ -116,3 +116,12 @@
 input.datepicker {
     cursor: pointer;
 }
+
+#modal_compartir ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#modal_compartir ul li{
+    width: 200px;
+}

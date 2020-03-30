@@ -43,6 +43,7 @@ function lnk_multisite_manager_page_html(){
     echo "<div id='posts'></div>";
     echo "<div id='cargando'></div>";
     echo lnk_multisite_modal_cambiar_sitio();
+    echo lnk_multisite_modal_compartir();    
     echo "</section>";
 }
 
@@ -60,7 +61,25 @@ function lnk_multisite_modal_cambiar_sitio() {
     $html.= "<button onClick='lnk_cambiar_sitio_post()'>Cambiar</button>";
     $html.= "</div>";
     return $html;
+}
 
+function lnk_multisite_modal_compartir() {
+    $sites = get_sites($sites_args);
+
+    $html = "<div id='modal_compartir' style='display:none;'>";
+    $html.= "<input id='modal_compartir_id_post' type='hidden' value='0' />";
+    $html.= "<input id='modal_compartir_id_blog' type='hidden' value='0' />";
+    $html.= "<ul id='compartir_sitios'>";
+    foreach($sites as $site) {
+        switch_to_blog($site->blog_id);
+        $html.="<li id='lnk_compartir_li_".$site->blog_id."'><label>".((strlen($site->path) > 1) ? rtrim($site->path,"/") : "/")."</label>&nbsp;&nbsp;";
+        $html.="<input type='checkbox' value='".$site->blog_id."' /></li>";
+        restore_current_blog();
+    }
+    $html.= "</ul>";
+    $html.= "<button onClick='lnk_compartir()'>Aplicar</button>";
+    $html.= "</div>";
+    return $html;
 }
 
 
@@ -247,6 +266,29 @@ function lnk_multisite_manager_change_agenda_action($request) {
 add_action( 'wp_ajax_lnk_multisite_manager_change_agenda_action', 'lnk_multisite_manager_change_agenda_action' );
 
 function lnk_multisite_manager_cambiar_sitio_post_action($request) {
+    $post_id = $_POST['post_id'];
+    $blog_id = $_POST['blog_id'];
+    $blog_ori_id = $_POST['blog_ori_id'];
+    switch_to_blog($blog_ori_id);
+    $post = get_post($post_id, ARRAY_A);
+    $meta = get_post_meta($post_id);
+    $post['ID'] = '';
+    switch_to_blog($blog_id);
+    $inserted_post_id = wp_insert_post($post);
+    foreach($meta as $key=>$value) {
+        update_post_meta($inserted_post_id,$key,$value[0]);
+    }
+    switch_to_blog($blog_ori_id);
+    wp_delete_post($post_id,true);
+    restore_current_blog();
+    echo json_encode($post);
+    wp_die();
+}
+add_action( 'wp_ajax_lnk_multisite_manager_cambiar_sitio_post_action', 'lnk_multisite_manager_cambiar_sitio_post_action' );
+
+function lnk_multisite_manager_compartir_post_action($request) {
+
+    // TODO
     $post_id = $_POST['post_id'];
     $blog_id = $_POST['blog_id'];
     $blog_ori_id = $_POST['blog_ori_id'];
