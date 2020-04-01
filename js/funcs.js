@@ -84,10 +84,22 @@ function lnk_close_cambiar_modal(){
 
 
 function lnk_open_dialog_compartir(id_post, id_blog){
+    var post = lnkPosts.find(function(item){
+        return item.ID === id_post; 
+    });
     jQuery("#modal_compartir input[type=checkbox]").attr("disabled", false);
+    jQuery("#modal_compartir input[type=checkbox]").attr("checked", false);
     jQuery("#modal_compartir #modal_compartir_id_post").val(id_post);
     jQuery("#modal_compartir #modal_compartir_id_blog").val(id_blog);
     jQuery("#modal_compartir #lnk_compartir_li_"+id_blog+" input[type=checkbox]").attr("disabled", true);
+    if(post.lnk_compartido !== null) {
+        post.lnk_compartido.forEach( function(sitio) {
+            if(sitio.val === 'true') {
+                jQuery("#modal_compartir #lnk_compartir_li_"+sitio.id+" input[type=checkbox]").attr("checked", true);
+            }
+        });
+    }
+    
     jQuery("#modal_compartir").dialog("open");
 }
 
@@ -126,7 +138,7 @@ function lnk_render_item_sitio(item){
     html+= item.blog.blog_name;
 
     html+= "<button id='trigger_modal_cambiar_sitio' onClick='lnk_open_dialog_cambiar_sitio("+item.ID+","+item.blog.blog_id+")'><span title='Cambiar' class='dashicons dashicons-update-alt'></span></button>";
-    html+= "<button id='trigger_modal_cambiar_sitio' onClick='lnk_open_dialog_compartir("+item.ID+","+item.blog.blog_id+")'><span title='Visible' class='dashicons dashicons-share'></span></button>";
+    html+= "<button id='trigger_modal_cambiar_sitio' onClick='lnk_open_dialog_compartir("+item.ID+","+item.blog.blog_id+","+item.lnk_compartir+")'><span title='Visible' class='dashicons dashicons-share'></span></button>";
     //    html+= "<button id='cambiar_sitio' onClick='lnk_cambiarSitio("+item.blog.blog_id+","+item.ID+",0)'><span title='Marcar Revisado' class='dashicons dashicons-yes' ></span></button>";
     html+= "</li>";
     return html;

@@ -287,24 +287,15 @@ function lnk_multisite_manager_cambiar_sitio_post_action($request) {
 add_action( 'wp_ajax_lnk_multisite_manager_cambiar_sitio_post_action', 'lnk_multisite_manager_cambiar_sitio_post_action' );
 
 function lnk_multisite_manager_compartir_post_action($request) {
-
-    // TODO
     $post_id = $_POST['post_id'];
     $blog_id = $_POST['blog_id'];
-    $blog_ori_id = $_POST['blog_ori_id'];
-    switch_to_blog($blog_ori_id);
-    $post = get_post($post_id, ARRAY_A);
-    $meta = get_post_meta($post_id);
-    $post['ID'] = '';
+    $sitios_compartir = $_POST['blogs_compartir'];
     switch_to_blog($blog_id);
-    $inserted_post_id = wp_insert_post($post);
-    foreach($meta as $key=>$value) {
-        update_post_meta($inserted_post_id,$key,$value[0]);
-    }
-    switch_to_blog($blog_ori_id);
-    wp_delete_post($post_id,true);
+    $post = get_post($post_id, ARRAY_A);
+    $strCompartir = json_encode($sitios_compartir);
+    update_post_meta($post_id, 'lnk_compartido', $strCompartir);
     restore_current_blog();
     echo json_encode($post);
     wp_die();
 }
-add_action( 'wp_ajax_lnk_multisite_manager_cambiar_sitio_post_action', 'lnk_multisite_manager_cambiar_sitio_post_action' );
+add_action( 'wp_ajax_lnk_multisite_manager_compartir_post_action', 'lnk_multisite_manager_compartir_post_action' );
