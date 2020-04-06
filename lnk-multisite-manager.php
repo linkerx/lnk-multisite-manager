@@ -293,6 +293,13 @@ function lnk_multisite_manager_compartir_post_action($request) {
     switch_to_blog($blog_id);
     $post = get_post($post_id, ARRAY_A);
     $strCompartir = json_encode($sitios_compartir);
+    foreach($sitios_compartir as $comp) {
+        if($comp['val'] == 'true') {
+            update_post_meta($post_id,'lnk_compartido_'.$comp['id'],1);
+        } else {
+            update_post_meta($post_id,'lnk_compartido_'.$comp['id'],0);
+        }
+    }
     update_post_meta($post_id, 'lnk_compartido', $strCompartir);
     restore_current_blog();
     echo json_encode($post);
