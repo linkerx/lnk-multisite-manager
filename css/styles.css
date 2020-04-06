@@ -39,21 +39,29 @@
     
 }
 
+#posts .col-id {
+    width: 5%;
+}
+
+#posts .col-fecha {
+    width: 10%;
+}
+
 #posts .col-titulo {
     width: 30%;
 }
 
 #posts .col-site {
-    width: 20%;
+    width: 15%;
 }
 
 #posts .col-estado {
-    width: 20%;
+    width: 15%;
 }
 
 
 #posts .col-acciones {
-    width: 30%;
+    width: 25%;
 }
 
 #posts .posts-header ul {
@@ -107,4 +115,13 @@
 
 input.datepicker {
     cursor: pointer;
+}
+
+#modal_compartir ul {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+#modal_compartir ul li{
+    width: 200px;
 }
